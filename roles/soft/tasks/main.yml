@@ -1,0 +1,75 @@
+---
+
+- name: install initial packages
+  action: apt pkg=$item state=installed
+  with_items:
+    - build-essential
+    - python-software-properties
+    - python-pycurl
+    - htop
+    - sphinxsearch
+
+- name: add nginx and node ppas
+  action: apt_repository repo=$item state=present
+  with_items:
+    - ppa:nginx/stable
+
+- name: add postgresql repo
+  action: apt_repository repo='deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' state=present
+
+- name: Update apt cache   
+  apt: update_cache=yes 
+
+- name: install main packages for python node nginx and postgresql
+  apt: pkg=$item state=installed force=yes
+  with_items:
+    - libpq-dev
+    - libmysqlclient-dev
+    - libxml2-dev
+    - zlib1g-dev
+    - mysql-client
+    - git-core
+    - nginx
+    - postgresql
+    - libpq-dev
+
+- name: remove default nginx site
+  action: file path=/etc/nginx/sites-enabled/default state=absent
+
+- name: write nginx.conf
+  copy: src=nginx.conf dest=/etc/nginx/nginx.conf
+  notify:
+    - restart nginx
+
+- name: create webapps directory
+  action: file dest=/srv/webapps state=directory
+
+- name: update postgres db configuration
+  copy: src=postgresql.conf dest=/etc/postgresql/9.2/main/postgresql.conf
+  notify:
+    - restart postgresql
+
+- name: update postgres client configuration
+  copy: src=pg_hba.conf dest=/etc/postgresql/9.2/main/pg_hba.conf
+  notify:
+    - restart postgresql
+
+- name: generate locale
+  action: command locale-gen en_US 
+
+- name: set locale
+  action: command update-locale LANG=en_US
+
+- name: Install ntp 
+  apt: name=ntp state=present
+  tags: ntp
+
+- name: Configure ntp file
+  template: src=ntp.conf.j2 dest=/etc/ntp.conf
+  tags: ntp
+  notify: restart ntp
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=true
+  tags: ntp
+

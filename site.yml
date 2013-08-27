@@ -1,0 +1,9 @@
+---
+- name: Install Full RoR stack (Nginx, PostgreSQL, Sphinx-search)
+  hosts: all
+  user: deploy
+  sudo: True
+
+  roles:
+    - rbenv 
+    - soft
