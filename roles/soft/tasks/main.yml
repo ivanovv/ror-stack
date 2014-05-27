@@ -9,14 +9,6 @@
     - htop
     - sphinxsearch
 
-- name: add nginx and node ppas
-  action: apt_repository repo=$item state=present
-  with_items:
-    - ppa:nginx/stable
-
-- name: add postgresql repo
-  action: apt_repository repo='deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' state=present
-
 - name: Update apt cache   
   apt: update_cache=yes 
 
