@@ -45,12 +45,12 @@
   action: file dest=/srv/webapps state=directory
 
 - name: update postgres db configuration
-  copy: src=postgresql.conf dest=/etc/postgresql/9.2/main/postgresql.conf
+  copy: src=postgresql.conf dest=/etc/postgresql/9.3/main/postgresql.conf
   notify:
     - restart postgresql
 
 - name: update postgres client configuration
-  copy: src=pg_hba.conf dest=/etc/postgresql/9.2/main/pg_hba.conf
+  copy: src=pg_hba.conf dest=/etc/postgresql/9.3/main/pg_hba.conf
   notify:
     - restart postgresql
 
@@ -70,6 +70,6 @@
   notify: restart ntp
 
 - name: Start the ntp service
-  service: name=ntpd state=started enabled=true
+  service: name=ntp state=started enabled=true
   tags: ntp
 
