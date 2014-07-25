@@ -1,7 +1,7 @@
 ---
 
 - name: install initial packages
-  action: apt pkg=$item state=installed
+  action: apt pkg={{item}} state=installed
   with_items:
     - build-essential
     - python-software-properties
@@ -13,7 +13,7 @@
   apt: update_cache=yes 
 
 - name: install main packages for python node nginx and postgresql
-  apt: pkg=$item state=installed force=yes
+  apt: pkg={{item}} state=installed force=yes
   with_items:
     - libpq-dev
     - libmysqlclient-dev
