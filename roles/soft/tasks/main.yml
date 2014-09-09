@@ -24,6 +24,7 @@
     - nginx
     - postgresql
     - libpq-dev
+    - nodejs
 
 - name: remove default nginx site
   action: file path=/etc/nginx/sites-enabled/default state=absent
